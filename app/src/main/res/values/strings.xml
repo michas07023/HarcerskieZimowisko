@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">HarcerskieZimowisko</string>
+    <string name="subtitle">Ile osób jest w zespole:</string>
+    <string name="title">Podaj nazwę zespołu:</string>
+    <string name="zagadka">Testowa zagadka. Odpowiedź to: prawda</string>
+    <string name="dalej">Dalej</string>
+    <string name="osoby">Poniżej wpisz wszystkie osoby z twojego zespołu:</string>
+
+</resources>
