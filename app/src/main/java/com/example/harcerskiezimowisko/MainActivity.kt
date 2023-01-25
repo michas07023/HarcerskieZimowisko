@@ -15,14 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Update
+import androidx.room.*
 import com.example.harcerskiezimowisko.ui.theme.HarcerskieZimowiskoTheme
 
 class MainActivity : ComponentActivity() {
@@ -53,6 +51,20 @@ class MainActivity : ComponentActivity() {
                         .background(Color.Green),
                 ) {
                     Ludzie()
+                }
+            }
+        }
+    }
+    private fun pytajnik(){
+        setContent {
+            HarcerskieZimowiskoTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Green),
+                ) {
+                    pytanie()
                 }
             }
         }
@@ -132,6 +144,10 @@ class MainActivity : ComponentActivity() {
 
 
     }
+    private var nazwazespolu: String? = null
+    private fun setZespol(nazwazespol:String?){
+        nazwazespolu = nazwazespol
+    }
     private var typy: Int? = 0
 
     private fun setludzie(ilosc: Int?){
@@ -171,6 +187,7 @@ class MainActivity : ComponentActivity() {
             Text(text = "Wpisz coś w obu wierszach!", color = Color.Red)
             Spacer(modifier = Modifier.height(48.dp))
             setludzie(ilosc)
+            setZespol(nazwa)
             Button(
                 onClick = { wybor(nazwa = nazwa, ilosc = ilosc)}, modifier = Modifier
                     .height(40.dp)
@@ -213,6 +230,7 @@ class MainActivity : ComponentActivity() {
             EditNumberField(value = amountinput, onValueChange = {amountinput = it} )
             Spacer(modifier = Modifier.height(48.dp))
             setludzie(ilosc)
+            setZespol(nazwa)
             if(textinput == "Basia123" && amountinput == "6513"){
 
             }
@@ -245,6 +263,14 @@ class MainActivity : ComponentActivity() {
             value = value,
             onValueChange = onValueChange,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+    }
+    @Composable
+    fun odpowiedz(value: String, onValueChange: (String) -> Unit){
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+
         )
     }
 
@@ -286,6 +312,8 @@ class MainActivity : ComponentActivity() {
             Button(
                 onClick = { if (czlekj.isNullOrEmpty() ||czlekd.isNullOrEmpty() && typy!! > 1|| czlek3.isNullOrEmpty() && typy!! > 2 || czlek4.isNullOrEmpty()  && typy!! > 3|| czlek5.isNullOrEmpty() && typy!! > 4){
                     ostrzezenied()
+                } else {
+                    zapisz(czlonek1 = czlekj, czlonek2 = czlekd, czlonek3 = czlek3, czlonek4 = czlek4, czlonek5 = czlek5 )
                 }}, modifier = Modifier
                     .height(40.dp)
                     .width(200.dp)
@@ -295,10 +323,38 @@ class MainActivity : ComponentActivity() {
         }
 
     }
+    private fun zapisz(czlonek1: String?,czlonek2: String?,czlonek3: String?,czlonek4: String?,czlonek5: String?){
+
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "Zespol"
+        ).build()
+        var zespol =  Zespol(1,nazwazespolu,czlonek1,1)
+        db.zespolDao().insertBothUsers(zespol)
+        zespol =  Zespol(2,null,czlonek2,null)
+        db.zespolDao().insertBothUsers(zespol)
+        zespol =  Zespol(3,null,czlonek3,null)
+        db.zespolDao().insertBothUsers(zespol)
+        zespol =  Zespol(4,null,czlonek4,null)
+        db.zespolDao().insertBothUsers(zespol)
+        zespol =  Zespol(5,null,czlonek5,null)
+        db.zespolDao().insertBothUsers(zespol)
+        pytajnik()
+    }
+    @Database(entities = [Zespol::class], version = 1)
+    abstract class AppDatabase : RoomDatabase() {
+        abstract fun zespolDao(): ZespolDao
+    }
     @Dao
     interface ZespolDao{
         @Update
-        fun updateUsers(vararg zespoly: Zespol)
+        fun updateUsers(zespoly: Zespol)
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        fun insertBothUsers(zespol: Zespol)
+
+
+        @Query("SELECT pytanie FROM Zespol")
+        fun getpytanie(): Array<Int>
     }
     @Composable
     fun LudzieO() {
@@ -334,13 +390,13 @@ class MainActivity : ComponentActivity() {
                 onWpisp = {czlek5 = it}
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Wpisz coś w obu wierszach!", color = Color.Red)
+            Text(text = "Wpisz wszystkie osoby", color = Color.Red)
             Spacer(modifier = Modifier.height(48.dp))
             Button(
                 onClick = { if (czlekj.isNullOrEmpty() ||czlekd.isNullOrEmpty() && typy!! > 1|| czlek3.isNullOrEmpty() && typy!! > 2 || czlek4.isNullOrEmpty()  && typy!! > 3|| czlek5.isNullOrEmpty() && typy!! > 4){
                     ostrzezenied()
-                }else{
-
+                }else {
+                    zapisz(czlonek1 = czlekj, czlonek2 = czlekd, czlonek3 = czlek3, czlonek4 = czlek4, czlonek5 = czlek5, )
                 }}, modifier = Modifier
                     .height(40.dp)
                     .width(200.dp)
@@ -349,6 +405,38 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+    }
+    @Composable
+    fun pytanie() {
+        var odpowiedz by remember { mutableStateOf("") }
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "Zespol"
+        ).build()
+        var key = db.zespolDao().getpytanie()[1]
+        var tresc = pytanie.get(key = key)
+        Column(
+            modifier = Modifier
+                .padding(32.dp)
+                .background(color = Color(1, 50, 32)),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = tresc.toString(),
+                color = Color.White,
+                fontSize = 24.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            odpowiedz(value = odpowiedz, onValueChange = {odpowiedz = it})
+            Button(
+                onClick = { }, modifier = Modifier
+                    .height(40.dp)
+                    .width(200.dp)
+            ) {
+                Text(text = stringResource(id = R.string.dalej))
+            }
+        }
     }
     @Composable
     fun WpiszSie( valuej: String, onWpisj: (String) -> Unit, valued: String, onWpisd: (String) -> Unit, valuet: String, onWpist: (String) -> Unit, valuec: String, onWpisc: (String) -> Unit, valuep: String, onWpisp: (String) -> Unit){
@@ -425,7 +513,6 @@ class MainActivity : ComponentActivity() {
             )  }
         }
     }
-
     @Preview(showBackground = true)
     @Composable
     fun DefaultPreview() {

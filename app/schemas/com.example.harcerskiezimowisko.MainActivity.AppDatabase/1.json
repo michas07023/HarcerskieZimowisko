@@ -1,0 +1,52 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "94137c4cba76cfa8853044535ebc04ff",
+    "entities": [
+      {
+        "tableName": "Zespol",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rowid` INTEGER NOT NULL, `Zespol` TEXT, `Czlonek` TEXT, `pytanie` INTEGER, PRIMARY KEY(`rowid`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "rowid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "Zespol",
+            "columnName": "Zespol",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "Czlonek",
+            "columnName": "Czlonek",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "Pytanie",
+            "columnName": "pytanie",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "rowid"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '94137c4cba76cfa8853044535ebc04ff')"
+    ]
+  }
+}

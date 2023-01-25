@@ -4,15 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-class Zespol {
-    @Entity(primaryKeys = ["nazwaZespol","czlonek1", "czlonek2", "czlonek3", "czlonek4","czonek5","pytanie"])
-    data class Zespol(
-         val nazwaZespol: String?,
-         val czlonek1: String?,
-         val czlonek2: String?,
-         val czlonek3: String?,
-         val czlonek4: String?,
-         val czlonek5: String?,
-         var pytanie: Int?
+@Entity
+data class Zespol(
+    @PrimaryKey @ColumnInfo(name = "rowid") val id: Int,
+    @ColumnInfo(name = "Zespol") val Zespol: String?,
+    @ColumnInfo(name = "Czlonek") val Czlonek: String?,
+    @ColumnInfo(name = "pytanie") val Pytanie: Int?
     )
-}
