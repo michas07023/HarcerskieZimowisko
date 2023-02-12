@@ -1,6 +1,7 @@
 package com.example.harcerskiezimowisko
 
 import android.os.Bundle
+import android.telephony.SmsManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -24,21 +25,23 @@ import androidx.room.*
 import com.example.harcerskiezimowisko.ui.theme.HarcerskieZimowiskoTheme
 
 class MainActivity : ComponentActivity() {
+    @Database(entities = [Zespol::class], version = 1)
+    abstract class AppDatabase : RoomDatabase() {
+        abstract fun zespolDao(): ZespolDao
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        pytania()
-        setContent {
-            HarcerskieZimowiskoTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Green),
-                ) {
-                    Pierwszy()
 
-                }
-            }
+        super.onCreate(savedInstanceState)
+
+        pytania()
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "Zespol"
+        ).allowMainThreadQueries().build()
+        if(db.zespolDao().getczlonek().isEmpty()){
+         poczatek()
+        } else{
+            pytajnik()
         }
     }
     private fun drugi(){
@@ -83,6 +86,21 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    private fun poczatek(){
+        setContent {
+            HarcerskieZimowiskoTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Green),
+                ) {
+                    Pierwszy()
+                }
+            }
+        }
+    }
+
     private fun ostrzezenied(){
         setContent {
             HarcerskieZimowiskoTheme {
@@ -97,50 +115,78 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    private fun ostrzezeniep(){
+        setContent {
+            HarcerskieZimowiskoTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Green),
+                ) {
+                    pytanieo()
+                }
+            }
+        }
+    }
+    private fun zakoncz(){
+        setContent {
+            HarcerskieZimowiskoTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Green),
+                ) {
+                    koniec()
+                }
+            }
+        }
+    }
     private var pytanie:HashMap<Int, String> = HashMap()
     private var odp:HashMap<Int, String> = HashMap()
     private fun pytania(){
-        pytanie[1] = "Pytanie 1"
-        pytanie[2] = "Pytanie 2"
-        pytanie[3] = "Pytanie 3"
-        pytanie[4] = "Pytanie 4"
-        pytanie[5] = "Pytanie 5"
-        pytanie[6] = "Pytanie 6"
-        pytanie[7] = "Pytanie 7"
-        pytanie[8] = "Pytanie 8"
-        pytanie[9] = "Pytanie 9"
-        pytanie[10] = "Pytanie 10"
-        pytanie[11] = "Pytanie 11"
-        pytanie[12] = "Pytanie 12"
-        pytanie[13] = "Pytanie 13"
-        pytanie[14] = "Pytanie 14"
-        pytanie[15] = "Pytanie 15"
-        pytanie[16] = "Pytanie 16"
-        pytanie[17] = "Pytanie 17"
-        pytanie[18] = "Pytanie 18"
-        pytanie[19] = "Pytanie 19"
-        pytanie[20] = "Pytanie 20"
+        pytanie[1] = "Nikt na ziemi nie szedł tą drogą. Co to za droga?"
+        pytanie[2] = "785"
+        pytanie[3] = "Gdy kupujemy, jest czarny. Używamy go- zmienia się w czerwony. Wyrzucamy już szary. Co to jest?"
+        pytanie[4] = "219"
+        pytanie[5] = "Ile razy w ciągu doby wskazówki zegara dwunastogodzinnego pokrywają się?"
+        pytanie[6] = "Jakie jest najwyżej położone schronisko górskie w Polsce?"
+        pytanie[7] = "Marysia i Julia wyszły razem na drinka. Obie zamówiły Sex On The Beach. Julia była naprawdę spragniona i wypiła pięć drinków w czasie, jaki zajęło Marysi ukończenie pierwszego. Napoje były zatrute, ale zmarła tylko Marysia. Jak to możliwe? (4 słowa)"
+        pytanie[8] = "po kod proszę sie udac na zadanie do Basi"
+        pytanie[9] = "Jakiej strefy przedwojennej Polski dotyczyła -wojna na pędzle-?"
+        pytanie[10] = "Dlaczego Jastrzębiec?"
+        pytanie[11] = "Jaki szcyt Tatr Zachodnich jest najwyższy?"
+        pytanie[12] = "998"
+        pytanie[13] = "Największy wodospad w Tatrach"
+        pytanie[14] = "Kto był prezydemtem Rzeczypospolitej Zakopiańskiej?"
+        pytanie[15] = "Jaki jest najwyższy jar całych Tatr?"
+        pytanie[16] = "Czym zajmuję sie Klechdarz"
+        pytanie[17] = "Najwyżej połozona wyspa w Polsce. Na jakiej jest wysokości?"
+        pytanie[18] = "Jak nazywał się namalowany w 1896r. największy polski obraz?"
+        pytanie[19] = "Kto to jest tzw. nosicz w niektórych schroniskach"
+        pytanie[20] = "Schronisko pod Wagą inaczej?"
 
-        odp[1] = "odp 1"
-        odp[2] = "odp 2"
-        odp[3] = "odp 3"
-        odp[4] = "odp 4"
-        odp[5] = "odp 5"
-        odp[6] = "odp 6"
-        odp[7] = "odp 7"
-        odp[8] = "odp 8"
-        odp[9] = "odp 9"
-        odp[10] = "odp 10"
-        odp[11] = "odp 11"
-        odp[12] = "odp 12"
-        odp[13] = "odp 13"
-        odp[14] = "odp 14"
-        odp[15] = "odp 15"
-        odp[16] = "odp 16"
-        odp[17] = "odp 17"
-        odp[18] = "odp 18"
-        odp[19] = "odp 19"
-        odp[20] = "odp 20"
+        odp[1] = "Droga Mleczna"
+        odp[2] = "Zygmunt III"
+        odp[3] = "Węgiel"
+        odp[4] = "Lodowy Stawek"
+        odp[5] = "22"
+        odp[6] = "Schronisko w Dolinie Pięciu Stawów Polskich"
+        odp[7] = "Trucizna była w lodzie"
+        odp[8] = "Jaskinia Ariadny"
+        odp[9] = "Turystyki"
+        odp[10] = "Od rodowego herbu zasadźcy, Wiktoryna Zdanowskiego, który był szlachcicem"
+        odp[11] = "Bystra"
+        odp[12] = "Wielki Staw Polski"
+        odp[13] = "Ciężka Siklawa"
+        odp[14] = "Stefan Żeromski"
+        odp[15] = "Szkaradny Żleb"
+        odp[16] = "zajmuje się opowiadaniem i wymyślaniem klechd"
+        odp[17] = "1689 m n.p.m."
+        odp[18] = "Panorama Tatr"
+        odp[19] = "Tragarz Tatrzański"
+        odp[20] = "Chata pod Rysami"
 
 
     }
@@ -324,38 +370,44 @@ class MainActivity : ComponentActivity() {
 
     }
     private fun zapisz(czlonek1: String?,czlonek2: String?,czlonek3: String?,czlonek4: String?,czlonek5: String?){
-
         val db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "Zespol"
-        ).build()
+        ).allowMainThreadQueries().build()
+
         var zespol =  Zespol(1,nazwazespolu,czlonek1,1)
-        db.zespolDao().insertBothUsers(zespol)
+        db.zespolDao().insertAll(zespol)
         zespol =  Zespol(2,null,czlonek2,null)
-        db.zespolDao().insertBothUsers(zespol)
+        db.zespolDao().insertAll(zespol)
         zespol =  Zespol(3,null,czlonek3,null)
-        db.zespolDao().insertBothUsers(zespol)
+        db.zespolDao().insertAll(zespol)
         zespol =  Zespol(4,null,czlonek4,null)
-        db.zespolDao().insertBothUsers(zespol)
+        db.zespolDao().insertAll(zespol)
         zespol =  Zespol(5,null,czlonek5,null)
-        db.zespolDao().insertBothUsers(zespol)
+        db.zespolDao().insertAll(zespol)
+        var tel = SmsManager.getDefault()
+        tel.sendTextMessage("725262205", null, "Zespołowi: " + db.zespolDao().getzespol()[0] + " udało się zapisać z członkami " + db.zespolDao().getczlonek(), null, null)
         pytajnik()
     }
-    @Database(entities = [Zespol::class], version = 1)
-    abstract class AppDatabase : RoomDatabase() {
-        abstract fun zespolDao(): ZespolDao
-    }
+
     @Dao
     interface ZespolDao{
         @Update
-        fun updateUsers(zespoly: Zespol)
+        fun update(pytanie: Zespol)
         @Insert(onConflict = OnConflictStrategy.REPLACE)
-        fun insertBothUsers(zespol: Zespol)
+        fun insertAll(vararg zespol: Zespol)
 
 
         @Query("SELECT pytanie FROM Zespol")
-        fun getpytanie(): Array<Int>
+        fun getpytanie(): List<Int?>
+
+        @Query("SELECT czlonek FROM Zespol")
+        fun getczlonek(): List<String?>
+
+        @Query("SELECT Zespol FROM Zespol")
+        fun getzespol(): List<String?>
     }
+
     @Composable
     fun LudzieO() {
         var czlekj by remember { mutableStateOf("") }
@@ -396,7 +448,7 @@ class MainActivity : ComponentActivity() {
                 onClick = { if (czlekj.isNullOrEmpty() ||czlekd.isNullOrEmpty() && typy!! > 1|| czlek3.isNullOrEmpty() && typy!! > 2 || czlek4.isNullOrEmpty()  && typy!! > 3|| czlek5.isNullOrEmpty() && typy!! > 4){
                     ostrzezenied()
                 }else {
-                    zapisz(czlonek1 = czlekj, czlonek2 = czlekd, czlonek3 = czlek3, czlonek4 = czlek4, czlonek5 = czlek5, )
+                    zapisz(czlonek1 = czlekj, czlonek2 = czlekd, czlonek3 = czlek3, czlonek4 = czlek4, czlonek5 = czlek5 )
                 }}, modifier = Modifier
                     .height(40.dp)
                     .width(200.dp)
@@ -407,13 +459,13 @@ class MainActivity : ComponentActivity() {
 
     }
     @Composable
-    fun pytanie() {
-        var odpowiedz by remember { mutableStateOf("") }
+    fun pytanieo() {
         val db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "Zespol"
-        ).build()
-        var key = db.zespolDao().getpytanie()[1]
+        ).allowMainThreadQueries().build()
+        var odpowiedz by remember { mutableStateOf("") }
+        var key = db.zespolDao().getpytanie()[0]
         var tresc = pytanie.get(key = key)
         Column(
             modifier = Modifier
@@ -428,14 +480,118 @@ class MainActivity : ComponentActivity() {
                 fontSize = 24.sp,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
+            Spacer(modifier = Modifier.height(40.dp))
             odpowiedz(value = odpowiedz, onValueChange = {odpowiedz = it})
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "To nie jest prawidłowa odpowiedź! Spróbuj ponownie", color = Color.Red)
+            Spacer(modifier = Modifier.height(48.dp))
             Button(
-                onClick = { }, modifier = Modifier
+                onClick = {
+                    if (odpowiedz.equals(odp.get(key = key)?.trim(), ignoreCase = true)){
+                        var tel = SmsManager.getDefault()
+                        tel.sendTextMessage("725262205", null, "Zespołowi: " + db.zespolDao().getzespol()[0] + " udało się odpowiedzieć na pytanie: " + db.zespolDao().getpytanie()[0], null, null)
+                        poprawnie()
+                        odpowiedz = ""
+                    } else {
+                        odpowiedz = ""
+                        pytajnik()
+                        Thread.sleep(1000)
+                        ostrzezeniep()
+                    }
+                }, modifier = Modifier
                     .height(40.dp)
                     .width(200.dp)
             ) {
                 Text(text = stringResource(id = R.string.dalej))
             }
+        }
+
+    }
+    @Composable
+    fun pytanie() {
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "Zespol"
+        ).allowMainThreadQueries().build()
+        var odpowiedz by remember { mutableStateOf("") }
+        var key = db.zespolDao().getpytanie()[0]
+        var tresc = pytanie.get(key = key)
+        Column(
+            modifier = Modifier
+                .padding(32.dp)
+                .background(color = Color(1, 50, 32)),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = tresc.toString(),
+                color = Color.White,
+                fontSize = 24.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(40.dp))
+            odpowiedz(value = odpowiedz, onValueChange = {odpowiedz = it})
+            Spacer(modifier = Modifier.height(48.dp))
+            Button(
+                onClick = {
+                    if (odpowiedz.equals(odp.get(key = key)?.trim(), ignoreCase = true) ){
+                        var tel = SmsManager.getDefault()
+                        tel.sendTextMessage("725262205", null, "Zespołowi: " + db.zespolDao().getzespol()[0] + " udało się odpowiedzieć na pytanie: " + db.zespolDao().getpytanie()[0], null, null)
+                        poprawnie()
+                        odpowiedz = ""
+                    } else {
+                        odpowiedz = ""
+                        pytajnik()
+                        Thread.sleep(1000)
+                        ostrzezeniep()
+                    }
+                 }, modifier = Modifier
+                    .height(40.dp)
+                    .width(200.dp)
+            ) {
+                Text(text = stringResource(id = R.string.dalej))
+            }
+        }
+
+    }
+    private fun poprawnie(){
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "Zespol"
+        ).allowMainThreadQueries().build()
+        var numerpyt = db.zespolDao().getpytanie()[0]
+        if (numerpyt != 20) {
+            if (numerpyt != null) {
+                numerpyt += 1
+                db.zespolDao().update(Zespol(1, db.zespolDao().getzespol()[0], db.zespolDao().getczlonek()[0], numerpyt))
+                pytajnik()
+            }
+        } else {
+            zakoncz()
+        }
+    }
+    @Composable
+    fun koniec(){
+        Column(
+            modifier = Modifier
+                .padding(32.dp)
+                .background(color = Color(1, 50, 32)),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Gratulujacje!",
+                color = Color.White,
+                fontSize = 40.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Ukończyliście grę! Oczekujcie nagrody!",
+                color = Color.White,
+                fontSize = 32.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
         }
     }
     @Composable
@@ -517,8 +673,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun DefaultPreview() {
         HarcerskieZimowiskoTheme {
-            Pierwszy()
-            Ludzie()
+            pytanieo()
         }
     }
 }
